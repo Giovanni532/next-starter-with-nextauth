@@ -1,7 +1,7 @@
 "use server";
 
 import { safeAction } from "@/lib/safe-action";
-import { signUpSchema } from "@/validatition/auth";
+import { signUpSchema } from "@/validations/auth";
 import { ZodError } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
