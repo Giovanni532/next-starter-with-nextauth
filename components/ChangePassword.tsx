@@ -8,23 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-}
 
-interface ChangePasswordProps {
-    user: User;
-}
-
-export function ChangePassword({ user }: ChangePasswordProps) {
+export function ChangePassword() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -33,6 +25,18 @@ export function ChangePassword({ user }: ChangePasswordProps) {
         const formData = new FormData(event.currentTarget);
         const lastPassword = formData.get("lastPassword") as string;
         const newPassword = formData.get("newPassword") as string;
+        const confirmPassword = formData.get("confirmPassword") as string;
+        if (lastPassword === newPassword) {
+            toast.error("Le nouveau mot de passe ne peut pas être identique au mot de passe actuel.");
+            setIsLoading(false);
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            toast.error("Les mots de passe ne correspondent pas.");
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const result = await changePassword({
@@ -73,15 +77,55 @@ export function ChangePassword({ user }: ChangePasswordProps) {
                             type="password"
                         />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 relative">
                         <Label htmlFor="newPassword">Nouveau mot de passe</Label>
                         <Input
                             id="newPassword"
                             name="newPassword"
                             required
                             disabled={isLoading}
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                         />
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-3 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                            onClick={() => setShowPassword(!showPassword)}
+                            disabled={isLoading}
+                        >
+                            {showPassword ? (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span className="sr-only">{showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}</span>
+                        </Button>
+                    </div>
+                    <div className="space-y-2 relative">
+                        <Label htmlFor="confirmPassword">Confirmer le nouveau mot de passe</Label>
+                        <Input
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            required
+                            disabled={isLoading}
+                            type={showConfirmPassword ? "text" : "password"}
+                        />
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-3 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            disabled={isLoading}
+                        >
+                            {showConfirmPassword ? (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span className="sr-only">{showConfirmPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}</span>
+                        </Button>
                     </div>
                 </CardContent>
                 <CardFooter>

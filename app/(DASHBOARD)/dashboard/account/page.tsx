@@ -19,7 +19,7 @@ export default async function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-2">
                     <ProfileForm user={user} />
-                    <ChangePassword user={user} />
+                    <ChangePassword />
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-fit">
                     <h2 className="text-xl font-semibold mb-4">Informations</h2>
