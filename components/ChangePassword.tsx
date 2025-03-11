@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { updateProfile } from "@/actions/profile";
+import { changePassword } from "@/actions/profile";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -18,11 +18,11 @@ interface User {
     email: string;
 }
 
-interface ProfileFormProps {
+interface ChangePasswordProps {
     user: User;
 }
 
-export function ProfileForm({ user }: ProfileFormProps) {
+export function ChangePassword({ user }: ChangePasswordProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -31,22 +31,23 @@ export function ProfileForm({ user }: ProfileFormProps) {
         setIsLoading(true);
 
         const formData = new FormData(event.currentTarget);
-        const firstName = formData.get("firstName") as string;
-        const lastName = formData.get("lastName") as string;
+        const lastPassword = formData.get("lastPassword") as string;
+        const newPassword = formData.get("newPassword") as string;
 
         try {
-            const result = await updateProfile({
-                firstName,
-                lastName,
+            const result = await changePassword({
+                currentPassword: lastPassword,
+                newPassword,
+                confirmPassword: newPassword,
             });
 
-            if (result?.data?.data?.user) {
-                toast.success("Profil mis à jour avec succès !");
+            if (result?.data?.success) {
+                toast.success("Mot de passe mis à jour avec succès !");
                 router.refresh();
             } else if (result && result.serverError) {
-                toast.error(result.serverError.message || "Une erreur est survenue lors de la mise à jour du profil.");
+                toast.error(result.serverError.message || "Une erreur est survenue lors de la mise à jour du mot de passe.");
             } else {
-                toast.error("Une erreur est survenue lors de la mise à jour du profil.");
+                toast.error("Une erreur est survenue lors de la mise à jour du mot de passe.");
             }
         } catch (error) {
             toast.error("Une erreur est survenue. Veuillez réessayer.");
@@ -58,45 +59,33 @@ export function ProfileForm({ user }: ProfileFormProps) {
     return (
         <Card className="border-none shadow-none">
             <CardHeader>
-                <CardTitle>Modifier votre profil</CardTitle>
+                <CardTitle>Modifier votre mot de passe</CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="firstName">Prénom</Label>
+                        <Label htmlFor="lastPassword">Mot de passe actuel</Label>
                         <Input
-                            id="firstName"
-                            name="firstName"
-                            defaultValue={user.firstName}
+                            id="lastPassword"
+                            name="lastPassword"
                             required
                             disabled={isLoading}
+                            type="password"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="lastName">Nom</Label>
+                        <Label htmlFor="newPassword">Nouveau mot de passe</Label>
                         <Input
-                            id="lastName"
-                            name="lastName"
-                            defaultValue={user.lastName}
+                            id="newPassword"
+                            name="newPassword"
                             required
                             disabled={isLoading}
+                            type="password"
                         />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={user.email}
-                            disabled={true}
-                            className="bg-gray-50 dark:bg-gray-800"
-                        />
-                        <p className="text-xs text-muted-foreground py-2">L'email ne peut pas être modifié</p>
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button type="submit" disabled={isLoading}>
+                    <Button type="submit" disabled={isLoading} className="my-4">
                         {isLoading ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

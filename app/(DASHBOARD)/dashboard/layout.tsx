@@ -1,21 +1,11 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import { BreadcrumbSidebar } from "@/components/sidebar/breadcrumb-sidebar"
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
     SidebarInset,
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { paths } from "@/paths"
-import Link from "next/link"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (

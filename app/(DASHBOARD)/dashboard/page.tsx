@@ -6,7 +6,6 @@ export default async function DashboardPage() {
     return (
         <div className="">
             <h1 className="text-3xl font-bold mb-6">Tableau de bord</h1>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                     <h2 className="text-xl font-semibold mb-4">Bienvenue, {user?.firstName || user?.email}</h2>
