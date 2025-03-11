@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { toast } from "sonner"
 import { registerUser } from "@/actions/auth"
+import Link from "next/link"
+import { paths } from "@/paths"
 
 export type AuthFormType = "signin" | "signup"
 
@@ -74,7 +76,6 @@ export function AuthForm({ type }: AuthFormProps) {
 
                     if (!signInResult?.error) {
                         router.push(callbackUrl)
-                        router.refresh()
                     }
                 } else {
                     toast.error(result?.serverError?.message || "Une erreur est survenue lors de l'inscription.")
@@ -169,16 +170,16 @@ export function AuthForm({ type }: AuthFormProps) {
                         {isSignIn ? (
                             <>
                                 Pas encore de compte?{" "}
-                                <Button variant="link" className="p-0 h-auto" onClick={() => router.push("/auth/signup")}>
+                                <Link href={paths.auth.register} className="p-0 h-auto">
                                     Créer un compte
-                                </Button>
+                                </Link>
                             </>
                         ) : (
                             <>
                                 Déjà un compte?{" "}
-                                <Button variant="link" className="p-0 h-auto" onClick={() => router.push("/auth/signin")}>
+                                <Link href={paths.auth.login} className="p-0 h-auto">
                                     Se connecter
-                                </Button>
+                                </Link>
                             </>
                         )}
                     </div>

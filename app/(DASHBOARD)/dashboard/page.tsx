@@ -1,4 +1,5 @@
 import { getUserInfo } from "@/actions/auth"
+
 export default async function DashboardPage() {
     const user = await getUserInfo()
 
