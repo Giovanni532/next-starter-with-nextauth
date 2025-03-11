@@ -1,12 +1,10 @@
 import { auth } from "@/lib/auth"
-import { redirect } from "next/navigation"
 
 export default async function DashboardPage() {
-    // Récupérer la session utilisateur
     const session = await auth()
 
     return (
-        <div className="container mx-auto py-10">
+        <div className="">
             <h1 className="text-3xl font-bold mb-6">Tableau de bord</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
