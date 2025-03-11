@@ -5,6 +5,7 @@ import { signUpSchema } from "@/validatition/auth";
 import { ZodError } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 // Action pour l'inscription d'un utilisateur (pas besoin d'authentification)
 export const registerUser = safeAction
@@ -58,4 +59,18 @@ export const registerUser = safeAction
                 error: "Une erreur est survenue lors de l'inscription",
             };
         }
-    }); 
+    });
+
+export async function getUserInfo() {
+    const session = await auth()
+
+    if (!session) {
+        return null
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { email: session?.user?.email as string },
+    })
+
+    return user
+}
