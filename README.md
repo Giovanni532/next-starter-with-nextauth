@@ -36,3 +36,19 @@
 ├── 📂 lib/                # Fonctions utilitaires
 ├── 📂 validations/        # Schema Zod
 ├── 📂 actions/            # Actions pour la mutations de donnée côtér serveur
+
+
+## 🚦 Démarrage rapide  
+
+### 1️⃣ Cloner le dépôt et lancer l'app 
+
+```bash
+git clone <URL_DU_REPO>
+cd nom-du-projet
+pnpm install
+# ou
+npm install
+pnpm run dev
+# ou
+npm dev
+```
