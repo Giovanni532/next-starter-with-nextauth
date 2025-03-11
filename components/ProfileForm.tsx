@@ -1,0 +1,132 @@
+"use client";
+
+import { useState } from "react";
+import { updateProfile } from "@/actions/profile";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
+
+interface User {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
+interface ProfileFormProps {
+    user: User;
+}
+
+export function ProfileForm({ user }: ProfileFormProps) {
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setIsLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        const formData = new FormData(event.currentTarget);
+        const firstName = formData.get("firstName") as string;
+        const lastName = formData.get("lastName") as string;
+
+        try {
+            const result = await updateProfile({
+                firstName,
+                lastName,
+            });
+
+            if (result?.data?.data?.user) {
+                setSuccess("Profil mis à jour avec succès !");
+                router.refresh();
+            } else if (result && result.serverError) {
+                setError(result.serverError.message || "Une erreur est survenue lors de la mise à jour du profil.");
+            } else {
+                setError("Une erreur est survenue lors de la mise à jour du profil.");
+            }
+        } catch (error) {
+            console.error("Erreur de mise à jour du profil:", error);
+            setError("Une erreur est survenue. Veuillez réessayer.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Modifier votre profil</CardTitle>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+                <CardContent className="space-y-4">
+                    {error && (
+                        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded text-red-600 dark:text-red-400 text-sm">
+                            {error}
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded text-green-600 dark:text-green-400 text-sm">
+                            {success}
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName">Prénom</Label>
+                        <Input
+                            id="firstName"
+                            name="firstName"
+                            defaultValue={user.firstName}
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="lastName">Nom</Label>
+                        <Input
+                            id="lastName"
+                            name="lastName"
+                            defaultValue={user.lastName}
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={user.email}
+                            disabled={true}
+                            className="bg-gray-50 dark:bg-gray-800"
+                        />
+                        <p className="text-xs text-muted-foreground">L'email ne peut pas être modifié</p>
+                    </div>
+                </CardContent>
+
+                <CardFooter>
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Mise à jour en cours...
+                            </>
+                        ) : (
+                            "Enregistrer les modifications"
+                        )}
+                    </Button>
+                </CardFooter>
+            </form>
+        </Card>
+    );
+} 

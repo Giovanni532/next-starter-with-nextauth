@@ -64,7 +64,7 @@ export function AuthForm({ type }: AuthFormProps) {
                     lastName
                 })
 
-                if (result.success) {
+                if (result?.data?.success) {
                     const signInResult = await signIn("credentials", {
                         redirect: false,
                         email,
@@ -77,11 +77,10 @@ export function AuthForm({ type }: AuthFormProps) {
                         router.refresh()
                     }
                 } else {
-                    toast.error(result.error || "Une erreur est survenue lors de l'inscription.")
+                    toast.error(result?.serverError?.message || "Une erreur est survenue lors de l'inscription.")
                 }
             }
         } catch (error) {
-            console.error("Erreur d'authentification:", error)
             toast.error("Une erreur est survenue. Veuillez réessayer.")
         } finally {
             setIsLoading(false)
@@ -119,7 +118,7 @@ export function AuthForm({ type }: AuthFormProps) {
                         <Input id="email" name="email" type="email" placeholder="jean@exemple.fr" required disabled={isLoading} />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 pb-4">
                         <Label htmlFor="password">Mot de passe</Label>
                         <div className="relative">
                             <Input
@@ -153,7 +152,6 @@ export function AuthForm({ type }: AuthFormProps) {
                         )}
                     </div>
                 </CardContent>
-
                 <CardFooter className="flex flex-col space-y-4">
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? (
@@ -167,7 +165,6 @@ export function AuthForm({ type }: AuthFormProps) {
                             "S'inscrire"
                         )}
                     </Button>
-
                     <div className="text-center text-sm">
                         {isSignIn ? (
                             <>
