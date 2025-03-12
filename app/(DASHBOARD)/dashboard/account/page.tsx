@@ -15,13 +15,13 @@ export default async function ProfilePage() {
 
     return (
         <div className="container mx-auto py-10">
-            <h1 className="text-3xl font-bold mb-6">Votre profil</h1>
+            <h1 className="text-3xl font-bold mb-6 ml-6">Votre profil</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-2">
                     <ProfileForm user={user} />
                     <ChangePassword />
                 </div>
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-fit">
+                <div className="bg-background dark:bg-gray-900 p-6 rounded-lg shadow h-fit">
                     <h2 className="text-xl font-semibold mb-4">Informations</h2>
                     <p className="text-gray-600 dark:text-gray-300 mb-4">
                         Vous pouvez modifier vos informations personnelles sur cette page.

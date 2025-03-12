@@ -131,7 +131,7 @@ export function Navbar() {
             {/* Menu mobile */}
             <motion.div
                 className={cn(
-                    "fixed inset-0 bg-white z-40 flex flex-col items-center justify-center md:hidden",
+                    "fixed inset-0 bg-background z-40 flex flex-col items-center justify-center md:hidden",
                     isOpen ? "block" : "hidden",
                 )}
                 initial={{ opacity: 0, y: -20 }}
@@ -151,11 +151,11 @@ export function Navbar() {
                                 y: isOpen ? 0 : -10,
                             }}
                             transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
-                            className="w-full text-center py-4 border-b border-gray-100 last:border-b-0"
+                            className="w-full text-center py-4 border-b border-border last:border-b-0"
                         >
                             <Link
                                 href={`#${item.toLowerCase()}`}
-                                className="text-2xl font-medium text-black hover:text-primary transition-colors duration-200"
+                                className="text-2xl font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
                                 onClick={() => setIsOpen(false)}
                             >
                                 {item}
