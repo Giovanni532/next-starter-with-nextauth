@@ -6,7 +6,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +14,7 @@ import { toast } from "sonner"
 import { registerUser } from "@/actions/auth"
 import Link from "next/link"
 import { paths } from "@/paths"
+import { useAuth } from "@/stores/useAuth"
 
 export type AuthFormType = "signin" | "signup"
 
@@ -24,6 +24,7 @@ interface AuthFormProps {
 
 export function AuthForm({ type }: AuthFormProps) {
     const router = useRouter()
+    const { setUser } = useAuth()
     const callbackUrl = "/dashboard"
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
@@ -49,6 +50,7 @@ export function AuthForm({ type }: AuthFormProps) {
                 })
 
                 if (!result?.error) {
+                    // La session sera mise à jour par le SessionSync
                     router.push(callbackUrl)
                     router.refresh()
                 } else {
@@ -75,6 +77,7 @@ export function AuthForm({ type }: AuthFormProps) {
                     })
 
                     if (!signInResult?.error) {
+                        // La session sera mise à jour par le SessionSync
                         router.push(callbackUrl)
                     }
                 } else {
