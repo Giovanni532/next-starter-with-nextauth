@@ -38,17 +38,47 @@
 ├── 📂 actions/            # Actions pour la mutations de donnée côtér serveur
 
 
-## 🚦 Démarrage rapide  
+## 🚀 Guide de démarrage
 
-### 1️⃣ Cloner le dépôt et lancer l'app 
+### Prérequis
+
+- Node.js 18+ 
+- pnpm ou npm
+- Une base de données Supabase
+
+### 1. Installation
 
 ```bash
+# Cloner le dépôt
 git clone <URL_DU_REPO>
 cd nom-du-projet
+
+# Installer les dépendances
 pnpm install
 # ou
 npm install
+```
+
+### 2. Configuration
+
+1. Générer la clé secrète pour l'authentification :
+```bash
+pnpx auth secret
+```
+
+2. Créer un fichier `.env` à la racine du projet :
+```env
+AUTH_SECRET=votre_clé_secrète
+DATABASE_URL=votre_url_supabase
+```
+
+### 3. Lancement
+
+```bash
 pnpm run dev
 # ou
-npm dev
+npm run dev
 ```
+
+L'application sera disponible sur [http://localhost:3000](http://localhost:3000)
+
