@@ -3,13 +3,7 @@
 import { z } from "zod";
 import { useMutation } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
-
-// Schéma de validation pour la mise à jour du profil
-const updateProfileSchema = z.object({
-    firstName: z.string().min(1, "Le prénom est requis").max(32),
-    lastName: z.string().min(1, "Le nom est requis").max(32),
-});
-
+import { updateProfileSchema } from "@/validations/profile";
 // Action pour mettre à jour le profil d'un utilisateur (nécessite d'être connecté)
 export const updateProfile = useMutation(
     updateProfileSchema,
