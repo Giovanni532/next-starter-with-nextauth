@@ -10,10 +10,13 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/.next
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/nextauth_db
       - AUTH_SECRET=${AUTH_SECRET}
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     depends_on:
       - db
     restart: unless-stopped

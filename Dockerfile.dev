@@ -5,7 +5,7 @@ WORKDIR /app
 # Install dependencies for development
 RUN npm install -g pnpm
 
-# Copy package.json and pnpm-lock.yaml
+# Copy package management files
 COPY package.json pnpm-lock.yaml ./
 
 # Copy prisma schema
@@ -14,16 +14,11 @@ COPY prisma ./prisma/
 # Install dependencies
 RUN pnpm install
 
-
-
 # Generate Prisma client
 RUN pnpx prisma generate
-
-# Copy the rest of the application
-COPY . .
 
 # Expose port
 EXPOSE 3000
 
-# Command to run the development server with hot reloading
-CMD ["pnpm", "dev"] 
+# Start the development server with polling enabled
+CMD ["pnpm", "dev:docker"] 
