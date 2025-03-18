@@ -14,7 +14,7 @@ import { toast } from "sonner"
 import { registerUser } from "@/actions/auth"
 import Link from "next/link"
 import { paths } from "@/paths"
-import { useAuth } from "@/stores/useAuth"
+import { motion, AnimatePresence } from "framer-motion"
 
 export type AuthFormType = "signin" | "signup"
 
@@ -24,8 +24,7 @@ interface AuthFormProps {
 
 export function AuthForm({ type }: AuthFormProps) {
     const router = useRouter()
-    const { setUser } = useAuth()
-    const callbackUrl = "/dashboard"
+    const callbackUrl = paths.dashboard.root
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
 
@@ -91,103 +90,212 @@ export function AuthForm({ type }: AuthFormProps) {
         }
     }
 
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2
+            }
+        }
+    }
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 24
+            }
+        }
+    }
+
+    const buttonVariants = {
+        idle: { scale: 1 },
+        hover: { scale: 1.03 },
+        tap: { scale: 0.97 }
+    }
+
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{isSignIn ? "Connexion" : "Créer un compte"}</CardTitle>
-                <CardDescription>
-                    {isSignIn
-                        ? "Entrez vos identifiants pour vous connecter"
-                        : "Remplissez le formulaire pour créer votre compte"}
-                </CardDescription>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-                <CardContent className="space-y-4">
-
-                    {!isSignIn && (
-                        <div className="space-y-2 flex flex-row gap-2 justify-between">
-                            <div className="space-y-2">
-                                <Label htmlFor="firstName">Prénom</Label>
-                                <Input id="firstName" name="firstName" placeholder="Jean" required disabled={isLoading} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="lastName">Nom</Label>
-                                <Input id="lastName" name="lastName" placeholder="Dupont" required disabled={isLoading} />
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" placeholder="jean@exemple.fr" required disabled={isLoading} />
-                    </div>
-
-                    <div className="space-y-2 pb-4">
-                        <Label htmlFor="password">Mot de passe</Label>
-                        <div className="relative">
-                            <Input
-                                id="password"
-                                name="password"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                required
-                                disabled={isLoading}
-                                className="pr-10"
-                                minLength={isSignIn ? 1 : 8}
-                            />
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                onClick={() => setShowPassword(!showPassword)}
-                                disabled={isLoading}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+        >
+            <Card className="overflow-hidden">
+                <CardHeader>
+                    <motion.div layout>
+                        <CardTitle>
+                            <motion.span
+                                key={isSignIn ? "signin-title" : "signup-title"}
+                                initial={{ opacity: 0, x: isSignIn ? -20 : 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: isSignIn ? 20 : -20 }}
+                                transition={{ duration: 0.3 }}
                             >
-                                {showPassword ? (
-                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                ) : (
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                {isSignIn ? "Connexion" : "Créer un compte"}
+                            </motion.span>
+                        </CardTitle>
+                        <CardDescription>
+                            <motion.span
+                                key={isSignIn ? "signin-desc" : "signup-desc"}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                {isSignIn
+                                    ? "Entrez vos identifiants pour vous connecter"
+                                    : "Remplissez le formulaire pour créer votre compte"}
+                            </motion.span>
+                        </CardDescription>
+                    </motion.div>
+                </CardHeader>
+                <form onSubmit={handleSubmit}>
+                    <CardContent className="space-y-4">
+                        <motion.div
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
+                            className="space-y-4"
+                        >
+                            <AnimatePresence mode="wait">
+                                {!isSignIn && (
+                                    <motion.div
+                                        className="space-y-2 flex flex-row gap-2 justify-between"
+                                        key="name-fields"
+                                        variants={itemVariants}
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <div className="space-y-2">
+                                            <Label htmlFor="firstName">Prénom</Label>
+                                            <Input id="firstName" name="firstName" placeholder="Jean" required disabled={isLoading} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="lastName">Nom</Label>
+                                            <Input id="lastName" name="lastName" placeholder="Dupont" required disabled={isLoading} />
+                                        </div>
+                                    </motion.div>
                                 )}
-                                <span className="sr-only">{showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}</span>
+                            </AnimatePresence>
+
+                            <motion.div className="space-y-2" variants={itemVariants}>
+                                <Label htmlFor="email">Email</Label>
+                                <Input id="email" name="email" type="email" placeholder="jean@exemple.fr" required disabled={isLoading} />
+                            </motion.div>
+
+                            <motion.div className="space-y-2 pb-4" variants={itemVariants}>
+                                <Label htmlFor="password">Mot de passe</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        required
+                                        disabled={isLoading}
+                                        className="pr-10"
+                                        minLength={isSignIn ? 1 : 8}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        disabled={isLoading}
+                                    >
+                                        <motion.div
+                                            initial={{ rotate: 0 }}
+                                            animate={{ rotate: showPassword ? 0 : 180 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                            ) : (
+                                                <Eye className="h-4 w-4 text-muted-foreground" />
+                                            )}
+                                        </motion.div>
+                                        <span className="sr-only">{showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}</span>
+                                    </Button>
+                                </div>
+                                <AnimatePresence>
+                                    {!isSignIn && (
+                                        <motion.p
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="text-xs text-muted-foreground pb-2"
+                                        >
+                                            Le mot de passe doit contenir au moins 8 caractères
+                                        </motion.p>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
+                        </motion.div>
+                    </CardContent>
+                    <CardFooter className="flex flex-col space-y-4">
+                        <motion.div
+                            variants={buttonVariants}
+                            initial="idle"
+                            whileHover="hover"
+                            whileTap="tap"
+                            className="w-full"
+                        >
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? (
+                                    <>
+                                        <motion.div
+                                            animate={{ rotate: 360 }}
+                                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                                        >
+                                            <Loader2 className="mr-2 h-4 w-4" />
+                                        </motion.div>
+                                        {isSignIn ? "Connexion en cours..." : "Inscription en cours..."}
+                                    </>
+                                ) : isSignIn ? (
+                                    "Se connecter"
+                                ) : (
+                                    "S'inscrire"
+                                )}
                             </Button>
-                        </div>
-                        {!isSignIn && (
-                            <p className="text-xs text-muted-foreground pb-2">Le mot de passe doit contenir au moins 8 caractères</p>
-                        )}
-                    </div>
-                </CardContent>
-                <CardFooter className="flex flex-col space-y-4">
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                {isSignIn ? "Connexion en cours..." : "Inscription en cours..."}
-                            </>
-                        ) : isSignIn ? (
-                            "Se connecter"
-                        ) : (
-                            "S'inscrire"
-                        )}
-                    </Button>
-                    <div className="text-center text-sm">
-                        {isSignIn ? (
-                            <>
-                                Pas encore de compte?{" "}
-                                <Link href={paths.auth.register} className="p-0 h-auto">
-                                    Créer un compte
-                                </Link>
-                            </>
-                        ) : (
-                            <>
-                                Déjà un compte?{" "}
-                                <Link href={paths.auth.login} className="p-0 h-auto">
-                                    Se connecter
-                                </Link>
-                            </>
-                        )}
-                    </div>
-                </CardFooter>
-            </form>
-        </Card>
+                        </motion.div>
+                        <motion.div
+                            className="text-center text-sm"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            {isSignIn ? (
+                                <>
+                                    Pas encore de compte?{" "}
+                                    <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                        <Link href={paths.auth.register} className="p-0 h-auto">
+                                            Créer un compte
+                                        </Link>
+                                    </motion.span>
+                                </>
+                            ) : (
+                                <>
+                                    Déjà un compte?{" "}
+                                    <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                        <Link href={paths.auth.login} className="p-0 h-auto">
+                                            Se connecter
+                                        </Link>
+                                    </motion.span>
+                                </>
+                            )}
+                        </motion.div>
+                    </CardFooter>
+                </form>
+            </Card>
+        </motion.div>
     )
 }
