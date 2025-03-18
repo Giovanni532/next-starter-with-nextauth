@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
 
 export function AuthAdmin() {
     const router = useRouter()
@@ -42,64 +43,141 @@ export function AuthAdmin() {
         }
     }
 
-    return (
-        <Card className="max-w-md mx-auto mt-10">
-            <CardHeader>
-                <CardTitle>Accès administrateur</CardTitle>
-                <CardDescription>
-                    Connectez-vous avec vos identifiants d'administrateur pour accéder à cette page
-                </CardDescription>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" placeholder="admin@exemple.fr" required disabled={isLoading} />
-                    </div>
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2
+            }
+        }
+    }
 
-                    <div className="space-y-2 pb-4">
-                        <Label htmlFor="password">Mot de passe</Label>
-                        <div className="relative">
-                            <Input
-                                id="password"
-                                name="password"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                required
-                                disabled={isLoading}
-                                className="pr-10"
-                            />
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                onClick={() => setShowPassword(!showPassword)}
-                                disabled={isLoading}
-                            >
-                                {showPassword ? (
-                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 24
+            }
+        }
+    }
+
+    const buttonVariants = {
+        idle: { scale: 1 },
+        hover: { scale: 1.03 },
+        tap: { scale: 0.97 }
+    }
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+            <Card className="max-w-md mx-auto mt-10 overflow-hidden">
+                <CardHeader>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.4 }}
+                    >
+                        <CardTitle>Accès administrateur</CardTitle>
+                        <CardDescription>
+                            Connectez-vous avec vos identifiants d'administrateur pour accéder à cette page
+                        </CardDescription>
+                    </motion.div>
+                </CardHeader>
+
+                <form onSubmit={handleSubmit}>
+                    <CardContent className="space-y-4">
+                        <motion.div
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
+                            className="space-y-4"
+                        >
+                            <motion.div className="space-y-2" variants={itemVariants}>
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    placeholder="admin@exemple.fr"
+                                    required
+                                    disabled={isLoading}
+                                />
+                            </motion.div>
+
+                            <motion.div className="space-y-2 pb-4" variants={itemVariants}>
+                                <Label htmlFor="password">Mot de passe</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        required
+                                        disabled={isLoading}
+                                        className="pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        disabled={isLoading}
+                                    >
+                                        <motion.div
+                                            initial={{ rotate: 0 }}
+                                            animate={{ rotate: showPassword ? 0 : 180 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                            ) : (
+                                                <Eye className="h-4 w-4 text-muted-foreground" />
+                                            )}
+                                        </motion.div>
+                                        <span className="sr-only">{showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}</span>
+                                    </Button>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </CardContent>
+                    <CardFooter>
+                        <motion.div
+                            className="w-full"
+                            variants={buttonVariants}
+                            initial="idle"
+                            whileHover="hover"
+                            whileTap="tap"
+                        >
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? (
+                                    <>
+                                        <motion.div
+                                            animate={{ rotate: 360 }}
+                                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                                        >
+                                            <Loader2 className="mr-2 h-4 w-4" />
+                                        </motion.div>
+                                        Connexion en cours...
+                                    </>
                                 ) : (
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                    "Se connecter"
                                 )}
-                                <span className="sr-only">{showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}</span>
                             </Button>
-                        </div>
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Connexion en cours...
-                            </>
-                        ) : (
-                            "Se connecter"
-                        )}
-                    </Button>
-                </CardFooter>
-            </form>
-        </Card>
+                        </motion.div>
+                    </CardFooter>
+                </form>
+            </Card>
+        </motion.div>
     )
 } 
