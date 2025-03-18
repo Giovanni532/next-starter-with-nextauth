@@ -14,10 +14,24 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { getUserInfo } from "@/actions/auth"
+import { NavMainAdmin, type NavItem } from "./nav-main-admin"
+import { getDbModels } from "@/actions/admin"
+import { ThemeToggle } from "../theme/ThemeToggle"
 
-
-export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export async function AppSidebarAdmin({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = await getUserInfo()
+
+  // Tenter de récupérer les données d'administration et gérer les erreurs
+  let navItems: NavItem[] = []
+  try {
+    const adminDataResult = await getDbModels({})
+    if (adminDataResult?.data?.success) {
+      navItems = adminDataResult.data.navItems || []
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données d'administration:", error)
+  }
+
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
@@ -29,8 +43,8 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-medium">Administration</span>
+                  <span className="truncate text-xs">Dashboard</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -38,12 +52,10 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {/* TODO: Add nav items si besoin*/}
-        {/* <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+        <NavMainAdmin items={navItems} />
       </SidebarContent>
       <SidebarFooter>
+        <ThemeToggle />
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>

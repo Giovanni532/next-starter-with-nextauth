@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import { cookies } from "next/headers"
 import { ZodError } from "zod"
 import { signInSchema, signUpSchema } from "@/validations/auth"
 import { prisma } from "@/lib/prisma"
@@ -14,6 +15,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (token.sub && session.user) {
                 session.user.id = token.sub;
             }
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: session.user.id
+                }
+            })
+            session.user = user
             return session;
         },
         async jwt({ token, user }) {
@@ -54,9 +61,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         if (!isPasswordValid) {
                             throw new Error("Identifiants invalides");
                         }
-
+                        const cookieStore = await cookies()
                         // Retourne l'utilisateur sans le mot de passe
                         const { password: _, ...userWithoutPassword } = user;
+                        cookieStore.set("user-app", JSON.stringify(userWithoutPassword))
                         return userWithoutPassword;
                     }
                     // Pour l'inscription, on utilise le schéma d'inscription
@@ -86,9 +94,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 lastName,
                             },
                         });
-
+                        const cookieStore = await cookies()
                         // Retourne l'utilisateur sans le mot de passe
                         const { password: _, ...userWithoutPassword } = newUser;
+                        cookieStore.set("user-app", JSON.stringify(newUser))
                         return userWithoutPassword;
                     }
                 } catch (error) {

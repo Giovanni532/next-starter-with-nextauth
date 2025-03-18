@@ -1,16 +1,18 @@
-import { auth } from "@/lib/auth"
 import { NextRequest, NextResponse } from "next/server"
-
+import { cookies } from "next/headers"
 export async function middleware(request: NextRequest) {
+    const cookieStore = await cookies()
+    const user = JSON.parse(cookieStore.get("user-app")?.value || "{}")
     const { pathname } = request.nextUrl
 
-    const session = await auth()
-
-    if (pathname.startsWith("/dashboard") && !session) {
+    if (pathname.startsWith("/admin1208") && user?.role !== "ADMIN") {
+        return NextResponse.redirect(new URL("/admin1208", request.url))
+    }
+    if (pathname.startsWith("/dashboard") && !user) {
         return NextResponse.redirect(new URL("/auth/sign-in", request.url))
     }
 
-    if (pathname.startsWith("/auth") && session) {
+    if (pathname.startsWith("/auth") && user) {
         return NextResponse.next()
     }
 
