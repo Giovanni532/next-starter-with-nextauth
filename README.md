@@ -26,6 +26,7 @@
 ✅ **Responsive Design** : Interface adaptative pour tous les appareils  
 ✅ **Session Management** : Gestion des sessions utilisateur  
 ✅ **Dashboard** : Page protégée accessible uniquement aux utilisateurs connectés  
+✅ **Admin Panel** : Interface d'administration protégée par rôle
 
 ---
 
@@ -36,6 +37,7 @@
 ├── 📂 lib/                # Fonctions utilitaires
 ├── 📂 validations/        # Schema Zod
 ├── 📂 actions/            # Actions pour la mutations de donnée côtér serveur
+├── 📂 scripts/            # Scripts utilitaires pour le projet
 
 
 ## 🚀 Guide de démarrage
@@ -81,6 +83,20 @@ npm run dev
 ```
 
 L'application sera disponible sur [http://localhost:3000](http://localhost:3000)
+
+### 4. Création d'un compte administrateur
+
+Pour créer un compte administrateur par défaut (email: admin@example.com, mot de passe: Admin123!), exécutez :
+
+```bash
+pnpm run create-admin
+# ou
+npm run create-admin
+```
+
+Vous pouvez également modifier les informations d'identification par défaut dans le fichier `scripts/create-admin.ts` avant d'exécuter la commande.
+
+Une fois créé, vous pourrez vous connecter à l'interface d'administration à l'adresse [http://localhost:3000/admin1208](http://localhost:3000/admin1208)
 
 ---
 
