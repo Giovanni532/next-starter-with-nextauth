@@ -233,7 +233,6 @@ export function AddModelRowModal({
         }
     };
 
-    // Fonction pour gérer le succès d'inscription d'un utilisateur
     const handleUserRegistrationSuccess = () => {
         setOpen(false);
         onSuccess();

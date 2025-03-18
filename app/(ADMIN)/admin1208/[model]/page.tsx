@@ -82,7 +82,7 @@ export default async function AdminModelPage({
             <div>
                 <h1 className="text-3xl font-bold">{formattedModelName}</h1>
                 <p className="text-muted-foreground">
-                    {modelData.pagination?.total || 0} enregistrement{modelData.pagination?.total !== 1 ? 's' : ''} trouvé{modelData.pagination?.total !== 1 ? 's' : ''}
+                    {modelData.data.length || 0} enregistrement{modelData.pagination?.total !== 1 ? 's' : ''} trouvé{modelData.pagination?.total !== 1 ? 's' : ''}
                 </p>
             </div>
 

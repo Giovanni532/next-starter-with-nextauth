@@ -66,10 +66,10 @@ export function ModelDataView({
     };
 
     return (
-        <Card className="shadow-sm w-[85%]">
+        <Card className="shadow-none w-[85%] border-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <div>
-                    <CardTitle>Données du modèle</CardTitle>
+                    <CardTitle>Données de la table {formattedModelName}</CardTitle>
                     <CardDescription>
                         Tous les enregistrements pour {formattedModelName}
                     </CardDescription>
