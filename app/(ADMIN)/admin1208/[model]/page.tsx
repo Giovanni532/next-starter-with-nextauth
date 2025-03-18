@@ -77,14 +77,12 @@ export default async function AdminModelPage({
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-    console.log("Model data length:",);
-
     return (
         <div className="space-y-4">
             <div>
                 <h1 className="text-3xl font-bold">{formattedModelName}</h1>
                 <p className="text-muted-foreground">
-                    {modelData.data.length || 0} enregistrement{modelData.pagination?.total !== 1 ? 's' : ''} trouvé{modelData.pagination?.total !== 1 ? 's' : ''}
+                    {modelData.pagination?.total || 0} enregistrement{modelData.pagination?.total !== 1 ? 's' : ''} trouvé{modelData.pagination?.total !== 1 ? 's' : ''}
                 </p>
             </div>
 

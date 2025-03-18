@@ -2,9 +2,11 @@
 
 import { AdminPagination } from "@/components/ui/admin-pagination";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download } from "lucide-react";
+import { Download, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { AddModelRowModal } from "./AddModelRowModal";
+import { useRouter } from "next/navigation";
 
 type ModelColumn = {
     column_name: string;
@@ -37,6 +39,8 @@ export function ModelDataView({
     formattedModelName,
 }: ModelDataViewProps) {
     const [isExporting, setIsExporting] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const router = useRouter();
 
     const handleExport = async () => {
         setIsExporting(true);
@@ -49,6 +53,18 @@ export function ModelDataView({
         }
     };
 
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            // Recharger la page pour rafraîchir les données
+            router.refresh();
+        } catch (error) {
+            console.error("Erreur lors du rafraîchissement:", error);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     return (
         <Card className="shadow-sm w-[85%]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
@@ -58,15 +74,32 @@ export function ModelDataView({
                         Tous les enregistrements pour {formattedModelName}
                     </CardDescription>
                 </div>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleExport}
-                    disabled={isExporting || modelData.data.length === 0}
-                >
-                    <Download className="h-4 w-4 mr-2" />
-                    Exporter
-                </Button>
+                <div className="flex gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRefresh}
+                        disabled={isRefreshing}
+                    >
+                        <RefreshCcw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                        Actualiser
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleExport}
+                        disabled={isExporting || modelData.data.length === 0}
+                    >
+                        <Download className="h-4 w-4 mr-2" />
+                        Exporter
+                    </Button>
+                    <AddModelRowModal
+                        modelName={modelName}
+                        formattedModelName={formattedModelName}
+                        columns={modelData.columns}
+                        onSuccess={handleRefresh}
+                    />
+                </div>
             </CardHeader>
             <CardContent>
                 {modelData.data?.length > 0 ? (

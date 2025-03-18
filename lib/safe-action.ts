@@ -1,6 +1,7 @@
 import { createSafeActionClient } from "next-safe-action";
 import { ZodError, ZodSchema } from "zod";
 import { auth } from "@/lib/auth";
+import { prisma } from "./prisma";
 
 // Classe d'erreur personnalisée pour les actions
 class ActionError extends Error {
@@ -48,11 +49,17 @@ export const authActionClient = baseActionClient.use(async ({ next }) => {
         throw new ActionError("Vous devez être connecté pour effectuer cette action");
     }
 
+    const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { role: true },
+    });
+
     // Passe l'utilisateur dans le contexte pour les actions suivantes
     return next({
         ctx: {
             user: session.user,
             userId: session.user.id as string,
+            role: user?.role as string,
         },
     });
 });
@@ -79,7 +86,7 @@ export const safeAction = baseActionClient;
 // Fonction pour créer des mutations qui nécessitent une authentification
 export function useMutation<TInput, TOutput>(
     schema: ZodSchema<TInput>,
-    handler: (input: TInput, ctx: { user: any; userId: string }) => Promise<TOutput>
+    handler: (input: TInput, ctx: { user: any; userId: string, role: string }) => Promise<TOutput>
 ) {
     return authActionClient
         .schema(schema)
@@ -92,7 +99,7 @@ export function useMutation<TInput, TOutput>(
 export function useRoleMutation<TInput, TOutput>(
     schema: ZodSchema<TInput>,
     role: string,
-    handler: (input: TInput, ctx: { user: any; userId: string }) => Promise<TOutput>
+    handler: (input: TInput, ctx: { user: any; userId: string, role: string }) => Promise<TOutput>
 ) {
     return createRoleMiddleware(role)
         .schema(schema)
