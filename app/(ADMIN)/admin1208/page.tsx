@@ -3,7 +3,6 @@
 import React from 'react'
 import { getUserInfo } from '@/actions/auth'
 import { AuthAdmin } from '@/components/AuthAdmin'
-import { AppSidebarAdmin } from '@/components/sidebar-admin/app-sidebar-admin'
 
 export default async function AdminPage() {
   const user = await getUserInfo()
@@ -16,7 +15,6 @@ export default async function AdminPage() {
   // Si l'utilisateur est administrateur, afficher l'interface d'administration
   return (
     <div className="flex h-screen">
-      <AppSidebarAdmin />
       <div className="flex-1 p-8">
         <h1 className="text-3xl font-bold mb-6">Tableau de bord d'administration</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -10,9 +10,11 @@ import {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
     const user = await getUserInfo()
+
     if (user?.role !== "ADMIN") {
         return children
     }
+
     return (
         <SidebarProvider>
             <AppSidebarAdmin />

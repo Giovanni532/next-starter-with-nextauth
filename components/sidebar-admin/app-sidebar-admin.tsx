@@ -15,21 +15,40 @@ import {
 } from "@/components/ui/sidebar"
 import { getUserInfo } from "@/actions/auth"
 import { NavMainAdmin, type NavItem } from "./nav-main-admin"
-import { getDbModels } from "@/actions/admin"
 import { ThemeToggle } from "../theme/ThemeToggle"
 
 export async function AppSidebarAdmin({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = await getUserInfo()
-
-  // Tenter de récupérer les données d'administration et gérer les erreurs
   let navItems: NavItem[] = []
-  try {
-    const adminDataResult = await getDbModels({})
-    if (adminDataResult?.data?.success) {
-      navItems = adminDataResult.data.navItems || []
+
+  // Seulement faire l'appel API si l'utilisateur est connecté
+  if (user) {
+    try {
+      // Encode user data as a base64 string for the authorization header
+      const userToken = btoa(JSON.stringify({
+        id: user.id,
+        role: user.role
+      }))
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ''}/api/admin`, {
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          navItems = data.navItems
+        }
+      } else {
+        console.error("Erreur lors de la récupération des données d'administration:", await response.text())
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données d'administration:", error)
     }
-  } catch (error) {
-    console.error("Erreur lors de la récupération des données d'administration:", error)
   }
 
   return (

@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { cookies } from "next/headers"
+
 export async function middleware(request: NextRequest) {
     const cookieStore = await cookies()
     const user = JSON.parse(cookieStore.get("user-app")?.value || "{}")
+    console.log(user)
     const { pathname } = request.nextUrl
 
-    if (pathname.startsWith("/admin1208") && user?.role !== "ADMIN") {
+    if (pathname.startsWith("/admin1208/") && user?.role !== "ADMIN") {
         return NextResponse.redirect(new URL("/admin1208", request.url))
     }
     if (pathname.startsWith("/dashboard") && !user) {

@@ -4,7 +4,7 @@ import React from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
-import { LayoutDashboard, Users, Key, CreditCard, Settings } from "lucide-react"
+import { LayoutDashboard, Users, Key, CreditCard, Settings, Database } from "lucide-react"
 
 // Type pour les éléments de navigation
 export interface NavItem {
@@ -36,7 +36,7 @@ export function NavMainAdmin({ items }: NavMainAdminProps) {
       case "Settings":
         return <Settings className="size-4" />
       default:
-        return <LayoutDashboard className="size-4" />
+        return <Database className="size-4" />
     }
   }
 
