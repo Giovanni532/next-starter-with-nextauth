@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { addModelRow } from "@/actions/admin-models";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
+import { AuthForm } from "@/components/AuthForm";
 
 type ModelColumn = {
     column_name: string;
@@ -42,6 +43,8 @@ export function AddModelRowModal({
     const [formData, setFormData] = useState<Record<string, any>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const isUsersModel = modelName === "users";
 
     // Filtrer les colonnes pour ne pas inclure l'ID et les timestamps
     const editableColumns = columns.filter(
@@ -230,6 +233,12 @@ export function AddModelRowModal({
         }
     };
 
+    // Fonction pour gérer le succès d'inscription d'un utilisateur
+    const handleUserRegistrationSuccess = () => {
+        setOpen(false);
+        onSuccess();
+    };
+
     return (
         <Dialog open={open} onOpenChange={(o) => {
             setOpen(o);
@@ -241,53 +250,65 @@ export function AddModelRowModal({
                     <span>Ajouter un enregistrement</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+            <DialogContent className={`max-h-[90vh] overflow-y-auto ${isUsersModel ? "sm:max-w-[420px]" : "sm:max-w-[500px]"}`}>
                 <DialogHeader>
                     <DialogTitle className="flex items-center justify-between">
                         <span>Ajouter un enregistrement à {formattedModelName}</span>
                     </DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-6 py-4">
-                    {editableColumns.map((column) => (
-                        <div key={column.column_name} className="space-y-2">
-                            <Label htmlFor={column.column_name} className="flex gap-1">
-                                {column.column_name}
-                                {column.is_nullable === "NO" && (
-                                    <span className="text-red-500">*</span>
+
+                {isUsersModel ? (
+                    <div className="py-4">
+                        <AuthForm
+                            type="signup"
+                            onSuccess={handleUserRegistrationSuccess}
+                            disableRedirect
+                            skipSignIn
+                        />
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6 py-4">
+                        {editableColumns.map((column) => (
+                            <div key={column.column_name} className="space-y-2">
+                                <Label htmlFor={column.column_name} className="flex gap-1">
+                                    {column.column_name}
+                                    {column.is_nullable === "NO" && (
+                                        <span className="text-red-500">*</span>
+                                    )}
+                                    <span className="text-xs text-muted-foreground ml-2">
+                                        ({column.data_type})
+                                    </span>
+                                </Label>
+                                {renderFormField(column)}
+                                {errors[column.column_name] && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors[column.column_name]}
+                                    </p>
                                 )}
-                                <span className="text-xs text-muted-foreground ml-2">
-                                    ({column.data_type})
-                                </span>
-                            </Label>
-                            {renderFormField(column)}
-                            {errors[column.column_name] && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors[column.column_name]}
-                                </p>
-                            )}
-                        </div>
-                    ))}
-                    <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpen(false)}
-                            disabled={isSubmitting}
-                        >
-                            Annuler
-                        </Button>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Ajout...
-                                </>
-                            ) : (
-                                "Ajouter"
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </form>
+                            </div>
+                        ))}
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setOpen(false)}
+                                disabled={isSubmitting}
+                            >
+                                Annuler
+                            </Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Ajout...
+                                    </>
+                                ) : (
+                                    "Ajouter"
+                                )}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                )}
             </DialogContent>
         </Dialog>
     );

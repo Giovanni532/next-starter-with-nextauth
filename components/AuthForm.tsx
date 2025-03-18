@@ -20,9 +20,12 @@ export type AuthFormType = "signin" | "signup"
 
 interface AuthFormProps {
     type: AuthFormType
+    onSuccess?: () => void
+    disableRedirect?: boolean
+    skipSignIn?: boolean
 }
 
-export function AuthForm({ type }: AuthFormProps) {
+export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthFormProps) {
     const router = useRouter()
     const callbackUrl = paths.dashboard.root
     const [isLoading, setIsLoading] = useState(false)
@@ -49,9 +52,15 @@ export function AuthForm({ type }: AuthFormProps) {
                 })
 
                 if (!result?.error) {
-                    // La session sera mise à jour par le SessionSync
-                    router.push(callbackUrl)
-                    router.refresh()
+                    // Appeler onSuccess si fourni
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                    // Rediriger uniquement si disableRedirect n'est pas défini
+                    else if (!disableRedirect) {
+                        router.push(callbackUrl)
+                        router.refresh()
+                    }
                 } else {
                     toast.error("Identifiants invalides. Veuillez réessayer.")
                 }
@@ -68,16 +77,33 @@ export function AuthForm({ type }: AuthFormProps) {
                 })
 
                 if (result?.data?.success) {
-                    const signInResult = await signIn("credentials", {
-                        redirect: false,
-                        email,
-                        password,
-                        callbackUrl,
-                    })
+                    // Afficher un message de succès
+                    toast.success("Compte créé avec succès")
 
-                    if (!signInResult?.error) {
-                        // La session sera mise à jour par le SessionSync
-                        router.push(callbackUrl)
+                    // Se connecter après inscription réussie seulement si skipSignIn n'est pas activé
+                    if (!skipSignIn) {
+                        const signInResult = await signIn("credentials", {
+                            redirect: false,
+                            email,
+                            password,
+                            callbackUrl,
+                        })
+
+                        if (!signInResult?.error) {
+                            // Appeler onSuccess si fourni
+                            if (onSuccess) {
+                                onSuccess();
+                            }
+                            // Rediriger uniquement si disableRedirect n'est pas défini
+                            else if (!disableRedirect) {
+                                router.push(callbackUrl)
+                            }
+                        }
+                    } else {
+                        // Si on saute la connexion, appeler directement onSuccess
+                        if (onSuccess) {
+                            onSuccess();
+                        }
                     }
                 } else {
                     toast.error(result?.serverError?.message || "Une erreur est survenue lors de l'inscription.")
