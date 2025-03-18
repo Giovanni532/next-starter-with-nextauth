@@ -4,7 +4,6 @@ import { cookies } from "next/headers"
 export async function middleware(request: NextRequest) {
     const cookieStore = await cookies()
     const user = JSON.parse(cookieStore.get("user-app")?.value || "{}")
-    console.log(user)
     const { pathname } = request.nextUrl
 
     if (pathname.startsWith("/admin1208/") && user?.role !== "ADMIN") {

@@ -30,7 +30,7 @@ export async function AppSidebarAdmin({ ...props }: React.ComponentProps<typeof 
         role: user.role
       }))
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ''}/api/admin`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ''}/api/admin/models`, {
         cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
