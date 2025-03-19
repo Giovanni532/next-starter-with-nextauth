@@ -154,7 +154,7 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
         >
-            <Card className="overflow-hidden">
+            <Card className={skipSignIn ? "overflow-hidden border-none shadow-none" : "overflow-hidden"}>
                 <CardHeader>
                     <motion.div layout>
                         <CardTitle>
@@ -165,7 +165,7 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
                                 exit={{ opacity: 0, x: isSignIn ? 20 : -20 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                {isSignIn ? "Connexion" : "Créer un compte"}
+                                {isSignIn ? "Connexion" : skipSignIn ? "Créer un utilisateur" : "Créer un compte"}
                             </motion.span>
                         </CardTitle>
                         <CardDescription>
@@ -177,7 +177,9 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
                             >
                                 {isSignIn
                                     ? "Entrez vos identifiants pour vous connecter"
-                                    : "Remplissez le formulaire pour créer votre compte"}
+                                    : skipSignIn
+                                        ? "Remplissez le formulaire pour créer un utilisateur"
+                                        : "Remplissez le formulaire pour créer votre compte"}
                             </motion.span>
                         </CardDescription>
                     </motion.div>
@@ -276,7 +278,7 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
                             whileTap="tap"
                             className="w-full"
                         >
-                            <Button type="submit" className="w-full" disabled={isLoading}>
+                            <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
                                         <motion.div
@@ -285,8 +287,10 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
                                         >
                                             <Loader2 className="mr-2 h-4 w-4" />
                                         </motion.div>
-                                        {isSignIn ? "Connexion en cours..." : "Inscription en cours..."}
+                                        {skipSignIn ? "Traitement en cours..." : isSignIn ? "Connexion en cours..." : "Inscription en cours..."}
                                     </>
+                                ) : skipSignIn ? (
+                                    "Continuer"
                                 ) : isSignIn ? (
                                     "Se connecter"
                                 ) : (
@@ -300,7 +304,7 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
                         >
-                            {isSignIn ? (
+                            {skipSignIn ? null : isSignIn ? (
                                 <>
                                     Pas encore de compte?{" "}
                                     <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

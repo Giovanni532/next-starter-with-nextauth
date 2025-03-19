@@ -56,12 +56,13 @@ export function ModelDataView({
     const handleRefresh = async () => {
         setIsRefreshing(true);
         try {
-            // Recharger la page pour rafraîchir les données
             router.refresh();
         } catch (error) {
             console.error("Erreur lors du rafraîchissement:", error);
         } finally {
-            setIsRefreshing(false);
+            setTimeout(() => {
+                setIsRefreshing(false);
+            }, 1000);
         }
     };
 
@@ -80,15 +81,17 @@ export function ModelDataView({
                         size="sm"
                         onClick={handleRefresh}
                         disabled={isRefreshing}
+                        className="transition-all duration-200 cursor-pointer"
                     >
                         <RefreshCcw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                        Actualiser
+                        {isRefreshing ? "Actualisation en cours..." : "Actualiser"}
                     </Button>
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={handleExport}
                         disabled={isExporting || modelData.data.length === 0}
+                        className="transition-all duration-200 cursor-pointer"
                     >
                         <Download className="h-4 w-4 mr-2" />
                         Exporter

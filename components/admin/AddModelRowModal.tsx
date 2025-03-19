@@ -244,7 +244,7 @@ export function AddModelRowModal({
             if (!o) resetForm();
         }}>
             <DialogTrigger asChild>
-                <Button className="flex gap-1">
+                <Button className="flex gap-1 cursor-pointer">
                     <Plus className="h-4 w-4" />
                     <span>Ajouter un enregistrement</span>
                 </Button>

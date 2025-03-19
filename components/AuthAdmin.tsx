@@ -154,7 +154,7 @@ export function AuthAdmin() {
                     </CardContent>
                     <CardFooter>
                         <motion.div
-                            className="w-full"
+                            className="w-full cursor-pointer"
                             variants={buttonVariants}
                             initial="idle"
                             whileHover="hover"

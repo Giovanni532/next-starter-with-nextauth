@@ -22,6 +22,10 @@ export async function middleware(request: NextRequest) {
         }
     }
 
+    if (!pathname.startsWith("/admin1208") && user.id && user.role === "ADMIN") {
+        return NextResponse.redirect(new URL("/admin1208", request.url))
+    }
+
     if (!pathname.startsWith("/dashboard") && user.id && user.role === "USER") {
         return NextResponse.redirect(new URL("/dashboard", request.url))
     }
