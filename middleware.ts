@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    if (pathname.startsWith("/auth") && user.id) {
+    if (!pathname.startsWith("/dashboard") && user.id && user.role === "USER") {
         return NextResponse.redirect(new URL("/dashboard", request.url))
     }
 
