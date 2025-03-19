@@ -30,6 +30,8 @@ import {
 import Link from "next/link"
 import { paths } from "@/paths"
 import { logout } from "@/actions/auth"
+import { useAuth } from "@/stores/useAuth"
+import { useState } from "react"
 
 interface User {
   id: string
@@ -45,6 +47,22 @@ export function NavUser({
   user: User | null
 }) {
   const { isMobile } = useSidebar()
+  const { setUser } = useAuth()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true)
+      // Mettre à jour le store client immédiatement
+      setUser(null)
+      // Appeler l'action serveur pour déconnecter côté serveur
+      await logout()
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error)
+      setIsLoggingOut(false)
+    }
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -102,13 +120,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <form action={logout}>
-                <button type="submit" className="w-full flex items-center gap-2">
-                  <LogOut />
-                  Déconnexion
-                </button>
-              </form>
+            <DropdownMenuItem disabled={isLoggingOut} onClick={handleLogout}>
+              <LogOut />
+              {isLoggingOut ? "Déconnexion..." : "Déconnexion"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

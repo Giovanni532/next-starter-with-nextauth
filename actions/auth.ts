@@ -90,4 +90,7 @@ export async function logout() {
     const cookieStore = await cookies()
     cookieStore.delete("user-app")
     await signOut({ redirectTo: paths.auth.login })
+
+    // Assurer que la page est revalidée (même si nous le faisons déjà côté client)
+    revalidatePath("/")
 }
