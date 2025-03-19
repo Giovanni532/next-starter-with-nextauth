@@ -110,6 +110,7 @@ export function AuthForm({ type, onSuccess, disableRedirect, skipSignIn }: AuthF
                 }
             }
         } catch (error) {
+            console.error(error)
             toast.error("Une erreur est survenue. Veuillez réessayer.")
         } finally {
             setIsLoading(false)

@@ -141,7 +141,6 @@ export function ModelDataView({
                         <AdminPagination
                             currentPage={modelData.pagination.page}
                             totalPages={modelData.pagination.totalPages}
-                            modelName={modelName}
                         />
                     </>
                 ) : (

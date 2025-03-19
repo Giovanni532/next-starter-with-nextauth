@@ -49,6 +49,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 toast.error("Une erreur est survenue lors de la mise à jour du profil.");
             }
         } catch (error) {
+            console.error(error)
             toast.error("Une erreur est survenue. Veuillez réessayer.");
         } finally {
             setIsLoading(false);
@@ -92,7 +93,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                             disabled={true}
                             className="bg-gray-50 dark:bg-gray-800"
                         />
-                        <p className="text-xs text-muted-foreground py-2">L'email ne peut pas être modifié</p>
+                        <p className="text-xs text-muted-foreground py-2">L&apos;email ne peut pas être modifié</p>
                     </div>
                 </CardContent>
                 <CardFooter>

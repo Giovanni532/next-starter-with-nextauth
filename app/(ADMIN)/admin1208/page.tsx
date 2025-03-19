@@ -16,12 +16,12 @@ export default async function AdminPage() {
   return (
     <div className="flex h-screen">
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold mb-6">Tableau de bord d'administration</h1>
+        <h1 className="text-3xl font-bold mb-6">Tableau de bord d&apos;administration</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-card rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-2">Bienvenue, {user.firstName}</h2>
             <p className="text-muted-foreground">
-              Vous êtes connecté en tant qu'administrateur.
+              Vous êtes connecté en tant qu&apos;administrateur.
             </p>
           </div>
 

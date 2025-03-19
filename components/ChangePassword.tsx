@@ -54,6 +54,7 @@ export function ChangePassword() {
                 toast.error("Une erreur est survenue lors de la mise à jour du mot de passe.");
             }
         } catch (error) {
+            console.error(error)
             toast.error("Une erreur est survenue. Veuillez réessayer.");
         } finally {
             setIsLoading(false);

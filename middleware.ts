@@ -4,17 +4,26 @@ import { cookies } from "next/headers"
 export async function middleware(request: NextRequest) {
     const cookieStore = await cookies()
     const user = JSON.parse(cookieStore.get("user-app")?.value || "{}")
+
+
     const { pathname } = request.nextUrl
 
-    if (pathname.startsWith("/admin1208/") && user?.role !== "ADMIN") {
-        return NextResponse.redirect(new URL("/admin1208", request.url))
-    }
-    if (pathname.startsWith("/dashboard") && !user) {
-        return NextResponse.redirect(new URL("/auth/sign-in", request.url))
+    // Route admin1208 : rediriger vers login si non-admin ou non-authentifié
+    if (pathname.startsWith("/admin1208/")) {
+        if (!user.id || user?.role !== "ADMIN") {
+            return NextResponse.redirect(new URL("/admin1208", request.url))
+        }
     }
 
-    if (pathname.startsWith("/auth") && user) {
-        return NextResponse.next()
+    // Route dashboard : rediriger vers login si non-authentifié
+    if (pathname.startsWith("/dashboard")) {
+        if (!user.id) {
+            return NextResponse.redirect(new URL("/auth/sign-in", request.url))
+        }
+    }
+
+    if (pathname.startsWith("/auth") && user.id) {
+        return NextResponse.redirect(new URL("/dashboard", request.url))
     }
 
     return NextResponse.next()

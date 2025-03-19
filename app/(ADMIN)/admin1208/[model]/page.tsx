@@ -7,12 +7,12 @@ import {
 } from "@/components/ui/card";
 import { ModelDataView } from "@/components/admin/ModelDataView";
 
-type Params = { model: string };
+type Params = Promise<{ model: string }>;
 
-interface SearchParams {
+type SearchParams = Promise<{
     page?: string;
     limit?: string;
-}
+}>
 
 export default async function AdminModelPage({
     params,
@@ -21,9 +21,9 @@ export default async function AdminModelPage({
     params: Params,
     searchParams: SearchParams
 }) {
-    const model = params.model;
-    const page = searchParams.page ? parseInt(searchParams.page) : 1;
-    const limit = searchParams.limit ? parseInt(searchParams.limit) : 10;
+    const model = (await params).model;
+    const page = (await searchParams).page ? parseInt((await searchParams).page || '1') : 1;
+    const limit = (await searchParams).limit ? parseInt((await searchParams).limit || '10') : 10;
     const user = await getUserInfo();
 
     if (!user || user.role !== "ADMIN") {
@@ -32,7 +32,7 @@ export default async function AdminModelPage({
                 <CardHeader>
                     <CardTitle>Accès refusé</CardTitle>
                     <CardDescription>
-                        Vous n'avez pas les droits pour accéder à cette page.
+                        Vous n&apos;avez pas les droits pour accéder à cette page.
                     </CardDescription>
                 </CardHeader>
             </Card>

@@ -91,7 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         const cookieStore = await cookies()
                         // Retourne l'utilisateur sans le mot de passe
                         const { password: _, ...userWithoutPassword } = newUser;
-                        cookieStore.set("user-app", JSON.stringify(newUser))
+                        cookieStore.set("user-app", JSON.stringify(userWithoutPassword))
                         return userWithoutPassword;
                     }
                 } catch (error) {

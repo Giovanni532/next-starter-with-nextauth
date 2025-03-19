@@ -37,6 +37,7 @@ export function AuthAdmin() {
                 toast.error("Identifiants invalides ou vous n'avez pas les droits d'administrateur.")
             }
         } catch (error) {
+            console.error(error)
             toast.error("Une erreur est survenue. Veuillez réessayer.")
         } finally {
             setIsLoading(false)
@@ -89,7 +90,7 @@ export function AuthAdmin() {
                     >
                         <CardTitle>Accès administrateur</CardTitle>
                         <CardDescription>
-                            Connectez-vous avec vos identifiants d'administrateur pour accéder à cette page
+                            Connectez-vous avec vos identifiants d&apos;administrateur pour accéder à cette page
                         </CardDescription>
                     </motion.div>
                 </CardHeader>

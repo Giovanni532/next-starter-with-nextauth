@@ -14,13 +14,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface AdminPaginationProps {
     currentPage: number;
     totalPages: number;
-    modelName: string;
 }
 
 export function AdminPagination({
     currentPage,
     totalPages,
-    modelName,
 }: AdminPaginationProps) {
     const pathname = usePathname();
     const searchParams = useSearchParams();

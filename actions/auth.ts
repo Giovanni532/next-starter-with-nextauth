@@ -5,7 +5,11 @@ import { signUpSchema } from "@/validations/auth";
 import { ZodError } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { paths } from "@/paths";
+import { revalidatePath } from "next/cache";
 
 // Action pour l'inscription d'un utilisateur (pas besoin d'authentification)
 export const registerUser = safeAction
@@ -80,4 +84,10 @@ export async function getUserInfo() {
     })
 
     return user
+}
+
+export async function logout() {
+    const cookieStore = await cookies()
+    cookieStore.delete("user-app")
+    await signOut({ redirectTo: paths.auth.login })
 }

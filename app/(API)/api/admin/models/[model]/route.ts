@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-    request: Request,
+    request: NextRequest,
     { params }: { params: Promise<{ model: string }> }
 ) {
     try {
@@ -30,10 +30,10 @@ export async function GET(
             }
 
             const model = (await params).model;
-            const url = new URL(request.url);
-            const page = parseInt(url.searchParams.get('page') || '1');
-            const limit = parseInt(url.searchParams.get('limit') || '10');
-            const skip = (page - 1) * limit;
+            const searchParams = request.nextUrl.searchParams;
+            const page = searchParams.get('page') || '1';
+            const limit = searchParams.get('limit') || '10';
+            const skip = (parseInt(page) - 1) * parseInt(limit);
 
             // Vérifier si le modèle est valide avant de faire la requête
             const tableInfo = await prisma.$queryRaw`
@@ -77,7 +77,7 @@ export async function GET(
                     total: totalCount,
                     page,
                     limit,
-                    totalPages: Math.ceil(totalCount / limit)
+                    totalPages: Math.ceil(Number(totalCount) / Number(limit))
                 }
             });
 
