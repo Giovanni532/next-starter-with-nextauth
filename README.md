@@ -72,6 +72,7 @@ pnpx auth secret
 ```env
 AUTH_SECRET=votre_clé_secrète
 DATABASE_URL=votre_url_postgresql
+AUTH_TRUST_HOST=http://localhost:3000
 ```
 
 ### 3. Lancement
